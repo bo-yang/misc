@@ -100,17 +100,17 @@ public:
 		stack<TreeNode> st;
         while(root!=NULL) {
 			// Find the left-most node
-			while(root->left!=NULL) {
+			if(root->left!=NULL) {
 				TreeNode tmp=*root;
 				root=root->left;
 				tmp.left=NULL;
 				st.push(tmp);	// store the root of the right subtree
-			}
-			trace.push_back(root->val);
-			// Handle the right subtree
-			if(root->right!=NULL) {
+			} else if(root->right!=NULL) {
+				// Handle the right subtree
+				trace.push_back(root->val); // Visit leftmost node
 				root=root->right;
 			} else {
+				trace.push_back(root->val); // Visit leaf/root node
 				if(st.empty()) {
 					root=NULL;
 				} else {
@@ -133,14 +133,12 @@ public:
 		stack<TreeNode> st;
         while(root!=NULL) {
 			// Find the left-most node
-			while(root->left!=NULL) {
+			if(root->left!=NULL) {
 				TreeNode tmp=*root;
 				root=root->left;
 				tmp.left=NULL;
 				st.push(tmp);	// store the root of the right subtree
-			}
-			// Handle the right subtree
-			if(root->right!=NULL) {
+			} else if(root->right!=NULL) {
 				TreeNode tmp=*root;
 				root=root->right;
 				tmp.left=NULL;
