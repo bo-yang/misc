@@ -217,8 +217,8 @@ public:
 		queue<TreeNode*> q;
 		TreeNode* tmp=root;
 		q.push(tmp);
-		int nodes_cur_layer=1;
-		int nodes_next_layer=0;
+		int nodes_cur_layer=1; // # of nodes in current layer
+		int nodes_next_layer=0;	// # of nodes in next layer
 		while(nodes_cur_layer>0) {
 			for(int i=0;i<nodes_cur_layer;++i) {
 				tmp=q.front();
