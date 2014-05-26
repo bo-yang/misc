@@ -3,8 +3,9 @@
 // BTtraverse.cc - demonstration of Binary Tree Traversal.
 //
 // This file contains the code of building a binary tree from 
-// vector of strings, printing the binary tree and three traversal 
-// methods: preorder, inorder and postorder. 
+// vector of strings(level-by-level representation), printing the
+// binary tree and three traversal methods: preorder, inorder and
+// postorder. 
 //
 // Preorder traversal: (i) Visit the root, (ii) Traverse the left 
 // subtree, and (iii) Traverse the right subtree.
@@ -40,6 +41,7 @@
 #include <stack>
 #include <string>
 #include <cstdlib>
+#include <queue>
 
 using namespace std;
 
@@ -56,7 +58,7 @@ struct TreeNode {
  
 class BinaryTree {
 public:
-	BinaryTree() { tree=NULL; }
+	BinaryTree() { tree=NULL;layers=0; }
 	~BinaryTree() {
 		if(tree!=NULL)
 			delete [] tree;
@@ -165,7 +167,7 @@ public:
 		cout<<endl;
 	}
 
-	TreeNode* BuildTree(vector<string>& t, bool print=true) {
+	TreeNode* BuildTree(vector<string>& t) {
 		tree=new TreeNode[t.size()];
 
 		// Build binary tree from vector of strings, where # denotes an invalid node.
@@ -182,9 +184,6 @@ public:
 			int vi=0;	// index of valid nodes in current layer
 			for(int i=0;i<nodes_cur_layer;++i) {
 				if(*(it+i)=="#") { // Skip #s
-					if(print) {
-						cout<<"# ";
-					}
 					continue;
 				}
 
@@ -204,26 +203,49 @@ public:
 				nodes_next_layer+=2;
 				tree[idx+i].val=atoi((it+i)->c_str());
 				vi++;
-
-				if(print) {
-					cout<<tree[idx+i].val<<" ";
-				}
 			}
 
 			idx+=nodes_cur_layer;
 			it+=nodes_cur_layer;
 			nodes_cur_layer=nodes_next_layer;
-
-			if(print)
-				cout<<endl;
-
+			layers++;
 		}
 
 		return &tree[0];	// root of the tree
 	}
 
+	// Print binary tree level by level
+	void PrintTree(TreeNode *root) {
+		queue<TreeNode*> q;
+		TreeNode* tmp=root;
+		q.push(tmp);
+		int nodes_cur_layer=1;
+		int nodes_next_layer=0;
+		while(nodes_cur_layer>0) {
+			for(int i=0;i<nodes_cur_layer;++i) {
+				tmp=q.front();
+				q.pop();
+
+				cout<<tmp->val<<" ";
+
+				if(tmp->left!=NULL) {
+					q.push(tmp->left);
+					nodes_next_layer++;
+				}
+				if(tmp->right!=NULL) {
+					q.push(tmp->right);
+					nodes_next_layer++;
+				}
+			}
+			cout<<endl;
+			nodes_cur_layer=nodes_next_layer;
+			nodes_next_layer=0;
+		}
+	}
+
 private:
 	TreeNode* tree;
+	int layers;	// number of layers
 };
 
 int main() {
@@ -245,7 +267,8 @@ int main() {
 	tree5.insert(tree5.begin(),str5,str5+7);
 
 	BinaryTree bt;
-	TreeNode* root=bt.BuildTree(tree1);
+	TreeNode* root=bt.BuildTree(tree2);
+	bt.PrintTree(root);
 	
 	vector<int> vec=bt.PreorderTraversal(root);
 	bt.PrintTraversal(vec,"Preorder");
