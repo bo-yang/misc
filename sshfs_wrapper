@@ -1,0 +1,14 @@
+#!/bin/sh
+
+USER=<your_name>
+SERVER=<your_server>
+remote_dir=/nobackup/$USER
+local_dir=$HOME/Documents/VMs
+
+if [ ! -d ${local_dir} -o ! -s ${local_dir} ]
+then
+	sudo umount -f ~/Documents/VMs
+fi
+
+cd ${local_dir}
+sshfs $USER@${SERVER}:${remote_dir} ${local_dir}
