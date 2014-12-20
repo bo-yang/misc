@@ -7,7 +7,7 @@ local_dir=$HOME/Documents/VMs
 
 if [ ! -d ${local_dir} -o ! -s ${local_dir} ]
 then
-	sudo umount -f ~/Documents/VMs
+	sudo umount -f $local_dir
 fi
 
 cd ${local_dir}
