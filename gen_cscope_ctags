@@ -1,22 +1,17 @@
 #!/bin/sh
 
-# Generate cscope DB and ctags.
+# Generate cscope DB and ctags under source dir.
 
 Platform=`uname`
 CSCOPE_FILE=cscope.files
 TAG_FILE=tags
-SRCDIR=
-BASEDIR=
+SRCDIR=$PWD
+BASEDIR=$PWD
 ctags_opt="--file-scope=no"
 ctags_cmd=ctags
 if [[ "$Platform" == 'Linux' ]]
 then
-	SRCDIR=/nobackup/bobyan/router
-	BASEDIR=/nobackup/bobyan/cscope/$Platform
 	ctags_cmd=/usr/bin/ctags
-else
-	SRCDIR=$HOME/Documents/VMs/router
-	BASEDIR=$HOME/Documents/VMs/cscope/$Platform
 fi
 
 cd $BASEDIR
@@ -44,5 +39,6 @@ done
 
 cscope -b -q -k
 
-rm -f $BASEDIR/$TAG_FILE
-$ctags_cmd $ctags_opt -R $SRCDIR/base $SRCDIR/click $SRCDIR/meraki $SRCDIR/elts-meraki  $SRCDIR/hostap $SRCDIR/qca-nss $SRCDIR/wlan --extra=+f -f $BASEDIR/$TAG_FILE
+# ctags recursively search for tags under current dir, so hide tags under .git
+rm -f $BASEDIR/.git/$TAG_FILE
+$ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR/base $SRCDIR/click $SRCDIR/meraki $SRCDIR/elts-meraki  $SRCDIR/hostap $SRCDIR/qca-nss $SRCDIR/wlan
