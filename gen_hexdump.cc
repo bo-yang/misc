@@ -20,6 +20,19 @@ The formated file can be analyzed by Wireshark using "File->Import from Hex Dump
 Reference:
     - https://www.wireshark.org/docs/wsug_html_chunked/ChIOImportSection.html
 
+Usage:
+    gen_hexdump [-i input_file] [-n] [-s hex_str] -o out_file
+
+Examples:
+1. format a single hex string:
+    gen_hexdump -o <output> -s <hex_string>
+
+2. format a single packet in a file:
+    gen_hexdump -n -i <input> -o <output>
+
+3. format multiple packets from a file(one packet per line):
+    gen_hexdump -i <input> -o <output>
+
 Copyright(c) 2016 by Bo Yang(bonny95@gmail.com).
 */
 
@@ -41,16 +54,9 @@ bool valid_letter(char c)
         return false;
 }
 
-void gen_hexdump(const string &hex_str, const string &fname)
+void gen_hexdump(const string &hex_str, ofstream &ofs)
 {
     assert(!hex_str.empty());
-    assert(!fname.empty());
-
-    ofstream ofs(fname.c_str());
-    if (!ofs.is_open()) {
-        cout << "Error: failed to open file " << fname << endl;
-        return;
-    }
 
     char c, buf[16];
     uint32_t ridx = 0, cidx = 0;
@@ -100,8 +106,6 @@ void gen_hexdump(const string &hex_str, const string &fname)
     }
     if (num_hex || (cidx - last_space > 1))
         ofs << line << endl; // write the last line
-
-    ofs.close();
 }
 
 uint32_t read_hex_str(const string &fname, string &hex_str)
@@ -109,7 +113,7 @@ uint32_t read_hex_str(const string &fname, string &hex_str)
     ifstream ifs(fname.c_str());
     if (!ifs.is_open())
     {
-        cout << "Unable to open file";
+        cout << "Unable to open file" << fname << endl;
         return 0;
     }
 
@@ -121,17 +125,38 @@ uint32_t read_hex_str(const string &fname, string &hex_str)
     return hex_str.length();
 }
 
+bool read_hex_gen_dump(const string &fin, ofstream &ofs)
+{
+    ifstream ifs(fin.c_str());
+    if (!ifs.is_open())
+    {
+        cout << "Unable to open file" << fin << endl;
+        return false;
+    }
+
+    string line;
+    while (getline(ifs, line)) {
+        // Suppose each line is a packet
+        gen_hexdump(line, ofs);
+    }
+    ifs.close();
+
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     string hex_str;
     string in_file;
     string out_file;
+    bool mult_pkts = true;
     int c;
-    while ((c = getopt (argc, argv, "i:o:s:")) != -1) {
+    while ((c = getopt (argc, argv, "i:o:s:n")) != -1) {
         switch (c)
         {
             case 's':
                 hex_str = optarg;
+                mult_pkts = false;
                 break;
             case 'i':
                 in_file = optarg;
@@ -139,16 +164,36 @@ int main(int argc, char **argv)
             case 'o':
                 out_file = optarg;
                 break;
+            case 'n':
+                mult_pkts = false;
+                break;
             default:
-                cout << "Usage: " << argv[0] << " [-i input_file] [-o out_file] [-s hex_str]" <<endl;
+                cout << "Usage: " << argv[0] << " [-i input_file] [-n] [-s hex_str] -o out_file" <<endl;
                 abort();
         }
     }
 
-    if (!in_file.empty())
-        read_hex_str(in_file, hex_str);
+    assert(!out_file.empty());
+    ofstream ofs(out_file.c_str());
+    if (!ofs.is_open()) {
+        cout << "Error: failed to create file " << out_file << endl;
+        return 1;
+    }
 
-    gen_hexdump(hex_str, out_file);
+    if ( (!mult_pkts) && (!in_file.empty()) ) {
+        // Single packet in multiple lines
+        read_hex_str(in_file, hex_str);
+        gen_hexdump(hex_str, ofs);
+        ofs.close();
+        return 0;
+    }
+
+    if (!in_file.empty()) {
+        read_hex_gen_dump(in_file, ofs);
+    } else {
+        gen_hexdump(hex_str, ofs);
+    }
+    ofs.close();
 
     return 0;
 }
