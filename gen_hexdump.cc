@@ -137,7 +137,8 @@ bool read_hex_gen_dump(const string &fin, ofstream &ofs)
     string line;
     while (getline(ifs, line)) {
         // Suppose each line is a packet
-        gen_hexdump(line, ofs);
+        if (!line.empty())
+            gen_hexdump(line, ofs);
     }
     ifs.close();
 
