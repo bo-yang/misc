@@ -46,6 +46,13 @@ Copyright(c) 2016 by Bo Yang(bonny95@gmail.com).
 #include <cassert>
 using namespace std;
 
+static inline string trim(string& str)
+{
+    size_t first = str.find_first_not_of(' ');
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last-first+1));
+}
+
 bool valid_letter(char c)
 {
     if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <='f'))
@@ -54,10 +61,26 @@ bool valid_letter(char c)
         return false;
 }
 
-void gen_hexdump(const string &hex_str, ofstream &ofs)
+/*
+ * Remove contents before '|'.
+ * Example:
+ *
+ * chatter: nat_gw_ingress_print:   66 | 00fec82d de788843 e138a72b 08004500 00340000 40004006 2c3d0202 020a0a00 007c0016 d0a9888e 807279f1 171a8012 3908bca5 00000204 05b40101 04020103 0307
+ */
+void preprocess_hex_str(string &line)
+{
+    size_t start = line.find('|');
+    if (start != std::string::npos)
+        line = line.substr(start+1);
+    line = trim(line);
+}
+
+void gen_hexdump(string &hex_str, ofstream &ofs)
 {
     assert(!hex_str.empty());
 
+    preprocess_hex_str(hex_str);
+    
     char c, buf[16];
     uint32_t ridx = 0, cidx = 0;
     uint32_t last_space = cidx;
