@@ -19,6 +19,7 @@ The formated file can be analyzed by Wireshark using "File->Import from Hex Dump
 
 Reference:
     - https://www.wireshark.org/docs/wsug_html_chunked/ChIOImportSection.html
+    - http://www.bo-yang.net/network/c/c++/click/2016/01/26/gen-hex-dump/
 
 Usage:
     gen_hexdump [-i input_file] [-n] [-s hex_str] -o out_file
