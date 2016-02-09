@@ -9,3 +9,4 @@ Collection 1: Automatic Program Checking
 
 	- process_racket.sh: automatically run racket program and check for errors. It suppose the test commands and expected outputs are stored in file test_cmds.rkt.
 
+For details of gen_hexdump.cc, please refer to [Generate Wireshark-Understandable Hexdump](http://www.bo-yang.net/2016/01/26/gen-hex-dump) on [my blog](http://bo-yang.github.io).
