@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+#
+# This is a simple script to plot memory usage/allocation trends based on the periodical snapshots of
+# /proc/meminfo and /proc/slabinfo. For more details, please refer to:
+# http://www.bo-yang.net/2015/03/30/debug-kernel-space-memory-leak
+#
+
 import os
 import sys
 import os.path
