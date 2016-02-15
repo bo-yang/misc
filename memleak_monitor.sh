@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This is a simple script to monitor potential memory leak.
+# For more details, please refer to: http://www.bo-yang.net/2015/03/30/debug-kernel-space-memory-leak
+
 MAX_SIZE=20000000
 MON_FILE=/path/to/monitor_output_$(uname -n)
 while true
