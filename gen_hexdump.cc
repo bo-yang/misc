@@ -19,7 +19,6 @@ The formated file can be analyzed by Wireshark using "File->Import from Hex Dump
 
 Reference:
     - https://www.wireshark.org/docs/wsug_html_chunked/ChIOImportSection.html
-    - http://www.bo-yang.net/network/c/c++/click/2016/01/26/gen-hex-dump/
 
 Usage:
     gen_hexdump [-i input_file] [-n] [-s hex_str] -o out_file
@@ -63,25 +62,29 @@ bool valid_letter(char c)
 }
 
 /*
- * Remove contents before '|'.
+ * Skip commented line(beginning with # or //) and remove contents before '|'.
  * Example:
  *
  * chatter: nat_gw_ingress_print:   66 | 00fec82d de788843 e138a72b 08004500 00340000 40004006 2c3d0202 020a0a00 007c0016 d0a9888e 807279f1 171a8012 3908bca5 00000204 05b40101 04020103 0307
  */
-void preprocess_hex_str(string &line)
+bool preprocess_hex_str(string &line)
 {
-    size_t start = line.find('|');
+    if (line.empty() || line[0] == '#' || line.substr(0, 2) == "//")
+        return false;
+
+    size_t start = line.rfind('|'); // find the last '|'
     if (start != std::string::npos)
         line = line.substr(start+1);
     line = trim(line);
+
+    return true;
 }
 
 void gen_hexdump(string &hex_str, ofstream &ofs)
 {
-    assert(!hex_str.empty());
+    if (!preprocess_hex_str(hex_str))
+        return;
 
-    preprocess_hex_str(hex_str);
-    
     char c, buf[16];
     uint32_t ridx = 0, cidx = 0;
     uint32_t last_space = cidx;
