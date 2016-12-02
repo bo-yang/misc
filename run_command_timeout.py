@@ -1,7 +1,3 @@
-import os
-import sys
-import os.path
-import errno
 import subprocess
 import threading
 
