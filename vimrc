@@ -95,7 +95,7 @@ map <F6> GoDate: <Esc>:read !date<CR>kJ
 set path=.,../hdr/,../../hdr
 
 " for taglist plugin
-let Tlist_Ctags_Cmd="/usr/local/bin/ctags"
+let Tlist_Ctags_Cmd="/usr/bin/ctags"
 "set mouse=nv " enable the use of mouse in normal and visual mode 
 set mouse=a
 "set number
@@ -141,6 +141,10 @@ set ruler
 "colorscheme yellow
 syntax on
 
+" show tabs
+"set list
+"set listchars=tabs:->
+
 "Go language
 " Some Linux distributions set filetype in /etc/vimrc.
 " Clear filetype flags before changing runtimepath to force Vim to reload them.
@@ -154,18 +158,23 @@ syntax on
 au BufNewFile,BufRead *.cpp set syntax=cpp11
 au BufNewFile,BufRead *.cc set syntax=cpp11
 
+" Click support
+au BufNewFile,BufRead *.click set syntax=click
+au BufNewFile,BufRead *.testie set syntax=click
+au BufNewFile,BufRead *.template set syntax=click
+
 " TagBar toggle
+let g:tagbar_ctags_bin='/usr/bin/ctags'
 nmap tb :TagbarToggle<CR>
 
 "--------------------
 " Function: Open tag under cursor in new tab
 " Source:   http://stackoverflow.com/questions/563616/vimctags-tips-and-tricks
 "--------------------
-" let g:tagbar_ctags_bin='/usr/local/bin/ctags'
-let g:tagbar_width=26
 "map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 map <C-]> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 "map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+let g:tagbar_width=26
 "--------------------
 " Function: Remap keys to make it more similar to firefox tab functionality
 " Purpose:  Because I am familiar with firefox tab functionality
@@ -179,44 +188,48 @@ if filereadable($CTAGS_TAG)
 	set tags=$CTAGS_TAG
 endif
 
+"set guifont=DejaVu\ Sans\ Mono\ 9
+"if has("gui_running")
+"  if has("gui_gtk2")
+"    set guifont=Menlo\ 9
+"  elseif has("gui_photon")
+"    set guifont=Menlo:s9
+"  elseif has("gui_kde")
+"    set guifont=Menlo/9/-1/5/50/0/0/0/1/0
+"  elseif has("x11")
+"    set guifont=-*-menlo-medium-r-normal-*-*-180-*-*-m-*-*
+"  else
+"    set guifont=Menlo:h9:cDEFAULT
+"  endif
+"endif
+
 " pathogen
 execute pathogen#infect()
 
 " Nerd Tree
-" let g:NERDTreeDirArrows=0 " Do not use new arrows for directories
+let g:NERDTreeDirArrows=0
 map <C-n> :NERDTreeToggle<CR>
 let g:nerdtree_tabs_open_on_gui_startup=0 " no nerdtree_tabs by default
 
 " CtrlP
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-" Command-T
-let g:CommandTAcceptSelectionMap = '<C-t>'
-let g:CommandTAcceptSelectionTabMap = '<CR>'
+" Fugitive
+nmap gb :Gblame<CR>
 
 " Highlight variable under cursor
 autocmd CursorMoved * exe printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\'))
 
-" Highlight all instances of word under cursor, when idle.
-" Useful when studying strange source code.
-" Type z/ to toggle highlighting on/off.
-"
-"nnoremap z/ :if AutoHighlightToggle()<Bar>set hls<Bar>endif<CR>
-"function! AutoHighlightToggle()
-"  let @/ = ''
-"  if exists('#auto_highlight')
-"    au! auto_highlight
-"    augroup! auto_highlight
-"    setl updatetime=4000
-"    echo 'Highlight current word: off'
-"    return 0
-"  else
-"    augroup auto_highlight
-"      au!
-"      au CursorHold * let @/ = '\V\<'.escape(expand('<cword>'), '\').'\>'
-"    augroup end
-"    setl updatetime=500
-"    echo 'Highlight current word: ON'
-"    return 1
-"  endif
-"endfunction
+" Hilight space errors
+"let java_space_errors = 1
+"let c_no_trail_space_error = 1
+"autocmd FileType c,cpp,java,php autocmd BufWritePre <buffer> :%s/\s\+$//e
+"autocmd BufWritePre *.hh :%s/\s\+$//e
+"autocmd BufWritePre *.py :%s/\s\+$//e
+"autocmd BufWritePre *.sh :%s/\s\+$//e
+"autocmd BufWritePre *.go :%s/\s\+$//e
+"let c_no_tab_space_error = 1
+"Delete all trailing whitespace (at the end of each line) with: 
+"   :%s/\s\+$//
+" or manually
+"   :%s/\s\+$
