@@ -1,0 +1,14 @@
+#!/bin/sh
+
+ssh -i ~/Desktop/EC2Test.pem ubuntu@ec2-35-161-33-142.us-west-2.compute.amazonaws.com
+# –no-browser command tells jupyter not to open a browser; this isn’t neccessary, but jupyter prints some junk in the terminal without it
+# –port 8886 tells jupyter to run on port 8886; feel free to swap that port for any available port on your cloud instance
+
+ssh -N -f -L localhost:8888:localhost:8886 -i ~/Desktop/EC2Test.pem ubuntu@ec2-35-161-33-142.us-west-2.compute.amazonaws.com
+# -N tells ssh that a remote command won’t be sent; it doesn’t attempt to log you into the server
+# -f allows the tunnel to be forked into the background so you can close the terminal. If you use this option, you’ll have to kill the tunnel manually by finding the process. I usually leave out this option
+# -L tells ssh that you are going to pass in the local and remote addresses
+# localhost:8888 is the address on your local machine that you are forwarding to
+# localhost:8886 is the address on your cloud instance that jupyter is forwarding to which is the same address that you specified when opening jupyter
+
+# On your local machine, open a browser and go to localhost:8888. 
