@@ -9,9 +9,9 @@ SRCDIR=$PWD
 BASEDIR=$PWD
 ctags_opt="--file-scope=no"
 ctags_cmd=ctags
-if [[ "$Platform" == 'Linux' ]]
+if [[ "$Platform" == 'Darwin' ]]
 then
-	ctags_cmd=/usr/bin/ctags
+	ctags_cmd=/usr/local/bin/ctags
 fi
 
 cd $BASEDIR
@@ -19,7 +19,7 @@ cd $BASEDIR
 for dir in base bcm bcm-switch bcm2 flash click elts-meraki hostap meraki openwrt qca-nss wlan wpa_supplicant
 #for dir in base click elts-meraki hostap meraki qca-nss wlan
 do
-	if [[ "$Platform" == 'Linux' ]]
+	if [[ "$Platform" != 'Darwin' ]]
 	then
 		find $SRCDIR/$dir -regex ".*\.\(h\|c\|hh\|hpp\|cc\|cpp\|cxx\|s\|S\|x\)" -not -path "$SRCDIR/base/build_*" -print >> $BASEDIR/$CSCOPE_FILE
 	else
