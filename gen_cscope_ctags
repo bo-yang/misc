@@ -31,10 +31,10 @@ do
 			-name "*.hpp" -or	\
 			-name "*.cxx" -or	\
 			-name "*.s" -or		\
-            -name "*.S" -or		\
+                        -name "*.S" -or		\
 			-name "*.x" -or		\
-            -name "*.sh" -or		\
-            -name "*.py" -or		\
+                        -name "*.sh" -or		\
+                        -name "*.py" -or		\
 			-name "*.click" \) -print >> $BASEDIR/$CSCOPE_FILE
 	fi
 done
@@ -43,4 +43,3 @@ cscope -b -q -k
 
 rm -f $BASEDIR/.git/$TAG_FILE 2>/dev/null
 $ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR
-#$ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR/base/click-config $SRCDIR/click $SRCDIR/meraki $SRCDIR/elts-meraki  $SRCDIR/hostap $SRCDIR/qca-nss $SRCDIR/wlan
