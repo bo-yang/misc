@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Generate cscope DB and ctags under source dir.
+# Generate cscope DB and ctags.
 
 Platform=`uname`
 CSCOPE_FILE=cscope.files
@@ -16,14 +16,13 @@ fi
 
 cd $BASEDIR
 > $CSCOPE_FILE
-for dir in base bcm bcm-switch bcm2 flash click elts-meraki hostap meraki openwrt qca-nss wlan wpa_supplicant
-#for dir in base click elts-meraki hostap meraki qca-nss wlan
+for dir in $PWD `ls -d $PWD/*`
 do
 	if [[ "$Platform" != 'Darwin' ]]
 	then
-		find $SRCDIR/$dir -regex ".*\.\(h\|c\|hh\|hpp\|cc\|cpp\|cxx\|s\|S\|x\)" -not -path "$SRCDIR/base/build_*" -print >> $BASEDIR/$CSCOPE_FILE
+		find $dir -regex ".*\.\(h\|c\|hh\|hpp\|cc\|cpp\|cxx\|s\|S\|x\|click\|sh\|py\|go\)" -print >> $BASEDIR/$CSCOPE_FILE
 	else
-		find $SRCDIR/$dir  \(			\
+		find $dir  \(			\
 			-name "*.h" -or 	\
 			-name "*.c" -or 	\
 			-name "*.hh" -or 	\
@@ -32,13 +31,16 @@ do
 			-name "*.hpp" -or	\
 			-name "*.cxx" -or	\
 			-name "*.s" -or		\
+            -name "*.S" -or		\
 			-name "*.x" -or		\
-			-name "*.x" \) -not -path "$SRCDIR/base/build_*" -print >> $BASEDIR/$CSCOPE_FILE
+            -name "*.sh" -or		\
+            -name "*.py" -or		\
+			-name "*.click" \) -print >> $BASEDIR/$CSCOPE_FILE
 	fi
 done
 
 cscope -b -q -k
 
-# ctags recursively search for tags under current dir, so hide tags under .git
-rm -f $BASEDIR/.git/$TAG_FILE
-$ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR/base $SRCDIR/click $SRCDIR/meraki $SRCDIR/elts-meraki  $SRCDIR/hostap $SRCDIR/qca-nss $SRCDIR/wlan
+rm -f $BASEDIR/.git/$TAG_FILE 2>/dev/null
+$ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR
+#$ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR/base/click-config $SRCDIR/click $SRCDIR/meraki $SRCDIR/elts-meraki  $SRCDIR/hostap $SRCDIR/qca-nss $SRCDIR/wlan
