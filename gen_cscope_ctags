@@ -43,5 +43,6 @@ done
 
 cscope -b -q -k
 
+mkdir -p $BASEDIR/.git
 rm -f $BASEDIR/.git/$TAG_FILE 2>/dev/null
 $ctags_cmd $ctags_opt -R -f $BASEDIR/.git/$TAG_FILE $SRCDIR
