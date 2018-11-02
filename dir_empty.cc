@@ -6,6 +6,12 @@
 #include <cstdlib>
 
 using namespace std;
+
+// A test program for C- & shell-based dir_empty implementations.
+// To build:
+//     g++ -Wall -std=c++14 -o dir_empty dir_empty.cc 
+// Usage:
+//     ./dir_empty <dir>
  
 int dir_empty_c(const char *path)
 {
