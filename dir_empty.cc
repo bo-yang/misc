@@ -51,21 +51,22 @@ void test_dir_empty(int (*cb)(const char *path), const char *path)
 
     auto ret = cb(path);
     if (ret >= 0)
-			printf("%s: %sempty\n", path, ret ? "" : "not ");
+        printf("%s: %sempty\n", path, ret ? "" : "not ");
 
     auto end = chrono::steady_clock::now();
-    std::cout << "Elapsed time " << chrono::duration_cast<chrono::microseconds>(end-start).count()
-        << " us" << std::endl;
+    std::cout << "Elapsed time "
+	      << chrono::duration_cast<chrono::microseconds>(end-start).count()
+              << " us" << std::endl;
 }
  
 int main(int c, char **v)
 {
-	if (c < 2) return -1;
+    if (c < 2) return -1;
 
-	for (int i = 1; i < c; i++) {
-		test_dir_empty(dir_empty_c, v[i]);
+    for (int i = 1; i < c; i++) {
+        test_dir_empty(dir_empty_c, v[i]);
         test_dir_empty(dir_empty_shell, v[i]);
-	}
+    }
  
-	return 0;
+    return 0;
 }
